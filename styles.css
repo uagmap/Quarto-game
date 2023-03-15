@@ -1,0 +1,155 @@
+/* global variables */
+:root {
+    --color-dark: #444;
+    --color-light: #ecc026;
+    /* make field square but scaled to screen size idk */
+    --di: min(100vh, 100vw);
+    /* game board size */
+    --board-di: calc(var(--di) * 0.66666666);
+    /* cell borders width */
+    --border: calc(var(--board-di) * 0.013333333);
+    /* sizes of large and small figures */
+    --dimension-lg: calc(var(--line) * 14);
+    --dimension-sm: calc(var(--line) * 7);
+    /* make line width equal to border width */
+    --line: var(--border);
+}
+
+/* styles for endgame alert */
+#alert {
+  --color: var(--color-dark);
+  /* make transparent */
+  background-color: rgba(255, 255, 255, 0.8);
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  /* fade in transition */
+  transition: opacity 250ms ease-in-out;
+}
+
+/* while alert is inactive */
+#alert:not(.active) {
+  /* wont react to mouse clicks */
+  pointer-events: none;
+}
+
+/* general alert properties */ 
+#alert div {
+  background-color: var(--color);
+  border-radius: var(--border);
+  box-sizing: border-box;
+  color: white;
+  cursor: pointer;
+  font-size: calc(var(--board-di) * 0.07);
+  font-weight: bold;
+  left: 50%;
+  opacity: 0;
+  padding: calc(var(--border) * 2);
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  /* appearance animation */
+  transform: scale(0.00001) translate(-50%, -50%);
+  transform-origin: 0 0;
+  transition: all 250ms ease-in-out;
+  width: calc(var(--board-di) * 0.75);
+}
+
+/* makes alert active */
+#alert.active,
+#alert.active div {
+opacity: 1;
+}
+/* additional alert animation */
+#alert.active div {
+transform: scale(1) translate(-50%, -50%);
+}
+
+/* properties of a section for game field, all scaled to screen size */
+section {
+    box-sizing: border-box;
+    height: var(--di);
+    margin: calc((100vh - var(--di)) * 0.5) calc((100vw - var(--di)) * 0.5);
+    padding: calc((var(--di) - var(--board-di)) * 0.5);
+    width: var(--di);
+}
+
+/* properties of a game field */
+#board {
+    display: flex;
+    flex-wrap: wrap;
+    height: var(--board-di);
+    position: relative;
+    width: var(--board-di);
+}
+
+/* properties of a cell on a board */
+#board .tile {
+    display: block;
+    /* each cell takes up quarter of whole board */
+    height: 25%;
+    position: relative;
+    width: 25%;
+}
+
+/* set up text appearance in tiles */
+#board .tile::after {
+    align-items: center;
+    background: #e9e9e9;
+    border-radius: calc(var(--border) * 1.5);
+    color: white;
+    content: attr(label);
+    display: flex;
+    flex-direction: column;
+    font-size: calc(var(--board-di) * 0.07);
+    font-weight: bold;
+    justify-content: center;
+    height: 90%;
+    left: 5%;
+    position: absolute;
+    top: 5%;
+    width: 90%;
+}
+
+/* config piece appearance */
+#board .piece {
+    --initial-x: 0;
+    --initial-y: -1;
+    background-position: center;
+    background-color: #fff;
+    background-image: repeating-linear-gradient(
+        45deg,
+        var(--color-piece),
+        var(--color-piece) var(--line),
+        transparent var(--line),
+        transparent calc(var(--line) * 2)
+    );
+    border: var(--border) solid transparent;
+    box-sizing: border-box;
+    height: var(--dimension);
+    left: calc(var(--x, var(--initial-x)) * 25% + 12.5%);
+    position: absolute;
+    top: calc(var(--y, var(--initial-y)) * 25% + 12.5%);
+    transform: translate(-50%, -50%);
+    transition: all 150ms ease-in-out;
+    width: var(--dimension);
+}
+
+/* red border around selected element */
+#board .piece.active {
+    box-shadow: 0 0 0 var(--border) red;
+}
+
+/* set 4 different properties for elements */
+#board .piece.dark { --color-piece: var(--color-dark); }
+#board .piece.light { --color-piece: var(--color-light); }
+#board .piece.tall { --dimension: var(--dimension-lg); }
+#board .piece.short { --dimension: var(--dimension-sm); }
+#board .piece.round { border-radius: 50%; }
+#board .piece.square { border-radius: var(--border); }
+#board .piece.solid { background-color: var(--color-piece); }
+#board .piece.hollow { border-color: var(--color-piece); }
+
